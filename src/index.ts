@@ -1,23 +1,26 @@
-// User types
+// User types and schemas
 export * from "./plan/user";
 
-// Event types
+// Event types and schemas
 export * from "./plan/event";
 
-// Bid types
+// Bid types and schemas
 export * from "./plan/bid";
 
-// Cart types
+// Cart types and schemas
 export * from "./plan/cart";
 
-// Media types
+// Media types and schemas
 export * from "./media";
 
-// File manager types
+// File manager types and schemas
 export * from "./file-manager";
 
-// Utility types
+// Utility types and schemas
 export * from "./utils";
 
-// Company types
+// Company types and schemas
 export * from "./companies";
+
+// Validation utilities
+export * from "./validation";

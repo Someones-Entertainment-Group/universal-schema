@@ -1,5 +1,16 @@
-import { SomeonesPlanEvent } from "./event";
-import { Media } from "./../media";
+import { z } from 'zod';
+import { MediaSchema } from '../media';
+
+// User roles enum and schema
+export const UserRolesSchema = z.enum([
+  "event_owner",
+  "planner_pro",
+  "performer",
+  "vendor",
+  "venue_provider",
+  "influencer",
+  "party_seeker",
+]);
 
 enum UserRoles {
   // Admin Users
@@ -14,221 +25,232 @@ enum UserRoles {
   PartySeekers = "party_seeker",
 }
 
-type UserReview = {
-  id: number;
-  reviewer_id: number;
-  bidder_id: number;
-  event_id: number;
-  rating: number;
-  review: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  event?: SomeonesPlanEvent;
-  bidder?: User;
-  reviewer?: User;
-};
+// User review summary schema (no circular dependencies)
+export const SomeonesPlanUserReviewSummarySchema = z.object({
+  total_reviews: z.number(),
+  average_rating: z.number(),
+  rating_counts: z.record(z.number(), z.number()),
+});
 
-type UserReviewSummary = {
-  total_reviews: number;
-  average_rating: number;
-  rating_counts: {
-    [key: number]: number; // Key is the rating (1-5), value is the count
-  };
-};
+// Base user review schema without circular references
+export const SomeonesPlanUserReviewBaseSchema = z.object({
+  id: z.number(),
+  reviewer_id: z.number(),
+  bidder_id: z.number(),
+  event_id: z.number(),
+  rating: z.number(),
+  review: z.string(),
+  status: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-type User = {
-  id: number;
-  firstname: string;
-  lastname: string;
-  business_name: string | null;
-  username: string;
-  email: string;
-  country_code: string;
-  phone_number: string;
-  country: string;
-  city: string;
-  have_company: number;
-  company_name: string;
-  company_address: string;
-  uae_tax_registration_number: string;
-  is_number_verified: string;
-  is_email_verified: number;
-  role: UserRoles;
-  created_at: string;
-  updated_at: string;
-  token: string;
-  reviews: UserReview[];
-  summary?: UserReviewSummary;
-  profile_image: Media | null;
-  banner_cover: Media | null;
-};
+// Base user schema
+export const SomeonesPlanUserSchema = z.object({
+  id: z.number(),
+  firstname: z.string(),
+  lastname: z.string(),
+  business_name: z.string().nullable(),
+  username: z.string(),
+  email: z.string(),
+  country_code: z.string(),
+  phone_number: z.string(),
+  country: z.string(),
+  city: z.string(),
+  have_company: z.number(),
+  company_name: z.string(),
+  company_address: z.string(),
+  uae_tax_registration_number: z.string(),
+  is_number_verified: z.string(),
+  is_email_verified: z.number(),
+  role: UserRolesSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
+  token: z.string(),
+  reviews: z.array(SomeonesPlanUserReviewBaseSchema),
+  summary: SomeonesPlanUserReviewSummarySchema.optional(),
+  profile_image: MediaSchema.nullable(),
+  banner_cover: MediaSchema.nullable(),
+});
 
-type PerformerExtra = {
-  id: number;
-  user_id: number;
-  date_of_birth: string;
-  gender: string;
-  performance_category: string[];
-  musician_type: string;
-  musician_type_options: string[];
-  dancer_type_options: any[];
-  dj_type_options: any[];
-  availability_in_kids_party: string;
-  bio: string;
-  languages: string[];
-  created_at: string;
-  updated_at: string;
-};
+// Full user review schema with lazy references
+export const SomeonesPlanUserReviewSchema = SomeonesPlanUserReviewBaseSchema.extend({
+  event: z.any().optional(), // Will be SomeonesPlanEventSchema
+  bidder: z.lazy(() => SomeonesPlanUserSchema).optional(),
+  reviewer: z.lazy(() => SomeonesPlanUserSchema).optional(),
+});
 
-type VenderExtra = {
-  vender_type: string[];
-  catering_category: string[];
-  service_provided: string;
-  availability_in_kids_party: string;
-  bio: string;
-  languages: string[];
-  date_of_birth: string;
-  gender: string;
-};
+// Extra schemas for different user types
+export const SomeonesPlanPerformerExtraSchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  date_of_birth: z.string(),
+  gender: z.string(),
+  performance_category: z.array(z.string()),
+  musician_type: z.string(),
+  musician_type_options: z.array(z.string()),
+  dancer_type_options: z.array(z.any()),
+  dj_type_options: z.array(z.any()),
+  availability_in_kids_party: z.string(),
+  bio: z.string(),
+  languages: z.array(z.string()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-type InfluencerExtra = {
-  date_of_birth: string;
-  gender: string;
-  bio: string;
-  total_followers_count: string;
-  last_minute_event_requests: string;
-  average_engagement_rate: string;
-  top_brands_worked_with: string;
-  availability_in_kids_party: string;
-  performance_category: string[];
-  preferred_event_types: string[];
-  languages: string[];
-  created_at: string;
-  updated_at: string;
-};
+export const SomeonesPlanVenderExtraSchema = z.object({
+  vender_type: z.array(z.string()),
+  catering_category: z.array(z.string()),
+  service_provided: z.string(),
+  availability_in_kids_party: z.string(),
+  bio: z.string(),
+  languages: z.array(z.string()),
+  date_of_birth: z.string(),
+  gender: z.string(),
+});
 
-type VenueProviderExtra = {
-  date_of_birth: string;
-  gender: string;
-  venue_type: string;
-  max_visitors: string;
-  area_size: string;
-  facilities: string;
-  google_map_location: string;
-  preferred_events: string;
-  license_number: string;
-  vat_number: string;
-  business_address: string;
-  about_venue: string;
-  created_at: string;
-  updated_at: string;
-};
+export const SomeonesPlanInfluencerExtraSchema = z.object({
+  date_of_birth: z.string(),
+  gender: z.string(),
+  bio: z.string(),
+  total_followers_count: z.string(),
+  last_minute_event_requests: z.string(),
+  average_engagement_rate: z.string(),
+  top_brands_worked_with: z.string(),
+  availability_in_kids_party: z.string(),
+  performance_category: z.array(z.string()),
+  preferred_event_types: z.array(z.string()),
+  languages: z.array(z.string()),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-type PlannerProExtra = {
-  license_number: string;
-  vat_number: string;
-  company_website: string;
-  company_invoice_address: string;
-  position: string;
-  event_type: string;
-  no_of_events_manages_annualy: string;
-  preferences: string;
-  how_did_you_hear_about_us: string | null;
-  date_of_birth: string;
-  gender: string;
-  created_at: string;
-  updated_at: string;
-};
+export const SomeonesPlanVenueProviderExtraSchema = z.object({
+  date_of_birth: z.string(),
+  gender: z.string(),
+  venue_type: z.string(),
+  max_visitors: z.string(),
+  area_size: z.string(),
+  facilities: z.string(),
+  google_map_location: z.string(),
+  preferred_events: z.string(),
+  license_number: z.string(),
+  vat_number: z.string(),
+  business_address: z.string(),
+  about_venue: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-type PartySeekerExtra = {
-  date_of_birth: string;
-  gender: string;
-};
+export const SomeonesPlanPlannerProExtraSchema = z.object({
+  license_number: z.string(),
+  vat_number: z.string(),
+  company_website: z.string(),
+  company_invoice_address: z.string(),
+  position: z.string(),
+  event_type: z.string(),
+  no_of_events_manages_annualy: z.string(),
+  preferences: z.string(),
+  how_did_you_hear_about_us: z.string().nullable(),
+  date_of_birth: z.string(),
+  gender: z.string(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
 
-// All Users
+export const SomeonesPlanPartySeekerExtraSchema = z.object({
+  date_of_birth: z.string(),
+  gender: z.string(),
+});
 
-type EventOwnerUser = User & {
-  event_owner_extra: {
-    date_of_birth: string;
-    gender: string;
-  };
-};
+// Event owner extra schema
+const EventOwnerExtraSchema = z.object({
+  date_of_birth: z.string(),
+  gender: z.string(),
+});
 
-type PerformerUser = User & {
-  performer_extra: PerformerExtra;
-};
+// User with role schemas
+export const SomeonesPlanEventOwnerUserSchema = SomeonesPlanUserSchema.extend({
+  event_owner_extra: EventOwnerExtraSchema,
+});
 
-type VenderUser = User & {
-  vender_extra: VenderExtra;
-};
+export const SomeonesPlanPerformerUserSchema = SomeonesPlanUserSchema.extend({
+  performer_extra: SomeonesPlanPerformerExtraSchema,
+});
 
-type InfluencerUser = User & {
-  influencer_extra: InfluencerExtra;
-};
+export const SomeonesPlanVenderUserSchema = SomeonesPlanUserSchema.extend({
+  vender_extra: SomeonesPlanVenderExtraSchema,
+});
 
-type VenueProviderUser = User & {
-  venue_provider_extra: VenueProviderExtra;
-};
+export const SomeonesPlanInfluencerUserSchema = SomeonesPlanUserSchema.extend({
+  influencer_extra: SomeonesPlanInfluencerExtraSchema,
+});
 
-type PlannerProUser = User & {
-  planner_pro_extra: PlannerProExtra;
-};
+export const SomeonesPlanVenueProviderUserSchema = SomeonesPlanUserSchema.extend({
+  venue_provider_extra: SomeonesPlanVenueProviderExtraSchema,
+});
 
-type PartySeekerUser = User & {
-  party_seeker_extra: PartySeekerExtra;
-};
+export const SomeonesPlanPlannerProUserSchema = SomeonesPlanUserSchema.extend({
+  planner_pro_extra: SomeonesPlanPlannerProExtraSchema,
+});
 
-type UserWithRole =
-  | EventOwnerUser
-  | PerformerUser
-  | VenderUser
-  | InfluencerUser
-  | VenueProviderUser
-  | PlannerProUser
-  | PartySeekerUser;
+export const SomeonesPlanPartySeekerUserSchema = SomeonesPlanUserSchema.extend({
+  party_seeker_extra: SomeonesPlanPartySeekerExtraSchema,
+});
 
-type UserWithToken = User & {
-  token: string;
-};
+// Union schema for user with role
+export const SomeonesPlanUserWithRoleSchema = z.union([
+  SomeonesPlanEventOwnerUserSchema,
+  SomeonesPlanPerformerUserSchema,
+  SomeonesPlanVenderUserSchema,
+  SomeonesPlanInfluencerUserSchema,
+  SomeonesPlanVenueProviderUserSchema,
+  SomeonesPlanPlannerProUserSchema,
+  SomeonesPlanPartySeekerUserSchema,
+]);
 
-type GalleryItem = {
-  id: number;
-  user_id: number;
-  source_id: number;
-  source_type: string;
-  hashtags: string;
-  media: Media;
-};
+export const SomeonesPlanUserWithTokenSchema = SomeonesPlanUserSchema.extend({
+  token: z.string(),
+});
 
-type BankAccount = {
-  id: number;
-  user_id: number;
-  account_holder_name: string;
-  account_number: string;
-  bank_name: string;
-  iban_number: string;
-  swift_code: string;
-  status: string;
-};
+export const SomeonesPlanGalleryItemSchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  source_id: z.number(),
+  source_type: z.string(),
+  hashtags: z.string(),
+  media: MediaSchema,
+});
 
-export type {
-  User as SomeonesPlanUser,
-  PerformerExtra as SomeonesPlanPerformerExtra,
-  VenderExtra as SomeonesPlanVenderExtra,
-  InfluencerExtra as SomeonesPlanInfluencerExtra,
-  VenueProviderExtra as SomeonesPlanVenueProviderExtra,
-  PlannerProExtra as SomeonesPlanPlannerProExtra,
-  PartySeekerExtra as SomeonesPlanPartySeekerExtra,
-  EventOwnerUser as SomeonesPlanEventOwnerUser,
-  PerformerUser as SomeonesPlanPerformerUser,
-  VenderUser as SomeonesPlanVenderUser,
-  InfluencerUser as SomeonesPlanInfluencerUser,
-  VenueProviderUser as SomeonesPlanVenueProviderUser,
-  PlannerProUser as SomeonesPlanPlannerProUser,
-  PartySeekerUser as SomeonesPlanPartySeekerUser,
-  UserWithRole as SomeonesPlanUserWithRole,
-  UserWithToken as SomeonesPlanUserWithToken,
-  GalleryItem as SomeonesPlanGalleryItem,
-  BankAccount as SomeonesPlanBankAccount,
-};
+export const SomeonesPlanBankAccountSchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  account_holder_name: z.string(),
+  account_number: z.string(),
+  bank_name: z.string(),
+  iban_number: z.string(),
+  swift_code: z.string(),
+  status: z.string(),
+});
+
+// Infer types from schemas
+export type SomeonesPlanUser = z.infer<typeof SomeonesPlanUserSchema>;
+export type SomeonesPlanUserReview = z.infer<typeof SomeonesPlanUserReviewSchema>;
+export type SomeonesPlanUserReviewSummary = z.infer<typeof SomeonesPlanUserReviewSummarySchema>;
+export type SomeonesPlanPerformerExtra = z.infer<typeof SomeonesPlanPerformerExtraSchema>;
+export type SomeonesPlanVenderExtra = z.infer<typeof SomeonesPlanVenderExtraSchema>;
+export type SomeonesPlanInfluencerExtra = z.infer<typeof SomeonesPlanInfluencerExtraSchema>;
+export type SomeonesPlanVenueProviderExtra = z.infer<typeof SomeonesPlanVenueProviderExtraSchema>;
+export type SomeonesPlanPlannerProExtra = z.infer<typeof SomeonesPlanPlannerProExtraSchema>;
+export type SomeonesPlanPartySeekerExtra = z.infer<typeof SomeonesPlanPartySeekerExtraSchema>;
+export type SomeonesPlanEventOwnerUser = z.infer<typeof SomeonesPlanEventOwnerUserSchema>;
+export type SomeonesPlanPerformerUser = z.infer<typeof SomeonesPlanPerformerUserSchema>;
+export type SomeonesPlanVenderUser = z.infer<typeof SomeonesPlanVenderUserSchema>;
+export type SomeonesPlanInfluencerUser = z.infer<typeof SomeonesPlanInfluencerUserSchema>;
+export type SomeonesPlanVenueProviderUser = z.infer<typeof SomeonesPlanVenueProviderUserSchema>;
+export type SomeonesPlanPlannerProUser = z.infer<typeof SomeonesPlanPlannerProUserSchema>;
+export type SomeonesPlanPartySeekerUser = z.infer<typeof SomeonesPlanPartySeekerUserSchema>;
+export type SomeonesPlanUserWithRole = z.infer<typeof SomeonesPlanUserWithRoleSchema>;
+export type SomeonesPlanUserWithToken = z.infer<typeof SomeonesPlanUserWithTokenSchema>;
+export type SomeonesPlanGalleryItem = z.infer<typeof SomeonesPlanGalleryItemSchema>;
+export type SomeonesPlanBankAccount = z.infer<typeof SomeonesPlanBankAccountSchema>;

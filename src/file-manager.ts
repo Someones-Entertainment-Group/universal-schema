@@ -1,11 +1,15 @@
-import { Media } from './media'
+import { z } from 'zod';
+import { MediaSchema } from './media';
 
-// File management types
-export type FileManageItem = {
-  id: number
-  user_id: number
-  file_id: number
-  created_at: string
-  updated_at: string
-  media: Media
-}
+// File management Zod schemas
+export const FileManageItemSchema = z.object({
+  id: z.number(),
+  user_id: z.number(),
+  file_id: z.number(),
+  created_at: z.string(),
+  updated_at: z.string(),
+  media: MediaSchema,
+});
+
+// Infer types from schemas
+export type FileManageItem = z.infer<typeof FileManageItemSchema>;

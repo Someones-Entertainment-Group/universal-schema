@@ -1,30 +1,41 @@
-import { SomeonesPlanEvent } from "./event";
-import { SomeonesPlanUser } from "./user";
+import { z } from 'zod';
 
-enum BidStatuses {
+// Bid statuses enum and schema
+export const BidStatusesSchema = z.enum([
+  "pending",
+  "dismissed",
+  "accepted",
+  "canceled",
+]);
+
+export enum BidStatuses {
   Pending = "pending",
   Dismissed = "dismissed",
   Accepted = "accepted",
   Canceled = "canceled",
 }
 
-// Bid-related types
-interface Bid {
-  id: number;
-  bidder_id: number;
-  bidder_name: string;
-  bidder_role: string;
-  event_name: string;
-  event_id: number;
-  user_id: number;
-  bid_amount: number;
-  note: string;
-  bidder: SomeonesPlanUser;
-  event: SomeonesPlanEvent;
-  owner_note: string;
-  status: BidStatuses;
-  created_at: string;
-  updated_at: string;
-}
+// Bid schema with forward references
+export const SomeonesPlanBidSchema = z.object({
+  id: z.number(),
+  bidder_id: z.number(),
+  bidder_name: z.string(),
+  bidder_role: z.string(),
+  event_name: z.string(),
+  event_id: z.number(),
+  user_id: z.number(),
+  bid_amount: z.number(),
+  note: z.string(),
+  owner_note: z.string(),
+  status: BidStatusesSchema,
+  created_at: z.string(),
+  updated_at: z.string(),
+}).extend({
+  // These will be properly typed when the related schemas are available
+  bidder: z.any(), // SomeonesPlanUserSchema
+  event: z.any(),  // SomeonesPlanEventSchema
+});
 
-export type { Bid as SomeonesPlanBid, BidStatuses as SomeonesPlanBidStatuses };
+// Infer types
+export type SomeonesPlanBid = z.infer<typeof SomeonesPlanBidSchema>;
+export type SomeonesPlanBidStatuses = z.infer<typeof BidStatusesSchema>;

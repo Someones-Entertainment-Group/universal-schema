@@ -1,9 +1,20 @@
+import { z } from 'zod';
+
 /**
  * Company Enums and Constants
  * Used throughout the platform for company identification and checks
  */
 
 // Company Slugs - Unique identifiers
+export const CompanySlugSchema = z.enum([
+  "someones_plan",
+  "someones_ticket",
+  "someones_house",
+  "someones_stage",
+  "someones_studio",
+  "someones_entertainment_group",
+]);
+
 export enum CompanySlug {
   SOMEONES_PLAN = "someones_plan",
   SOMEONES_TICKET = "someones_ticket",
@@ -14,6 +25,15 @@ export enum CompanySlug {
 }
 
 // Company Names - Display names
+export const CompanyNameSchema = z.enum([
+  "Someones Plan",
+  "Someones Ticket",
+  "Someones House",
+  "Someones Stage",
+  "Someones Studio",
+  "Someones Entertainment Group",
+]);
+
 export enum CompanyName {
   SOMEONES_PLAN = "Someones Plan",
   SOMEONES_TICKET = "Someones Ticket",
@@ -24,6 +44,15 @@ export enum CompanyName {
 }
 
 // Company Websites
+export const CompanyWebsiteSchema = z.enum([
+  "https://www.someonesplan.com/",
+  "https://www.someonesticket.com/",
+  "https://someones.house/",
+  "https://someonesstage.com/",
+  "https://www.someones.studio/",
+  "https://www.someones.ae/",
+]);
+
 export enum CompanyWebsite {
   SOMEONES_PLAN = "https://www.someonesplan.com/",
   SOMEONES_TICKET = "https://www.someonesticket.com/",
@@ -34,6 +63,15 @@ export enum CompanyWebsite {
 }
 
 // Company Emails
+export const CompanyEmailSchema = z.enum([
+  "info@someonesplan.com",
+  "info@someonesticket.com",
+  "info@someones.house",
+  "info@someonesstage.com",
+  "info@someones.studio",
+  "info@someones.ae",
+]);
+
 export enum CompanyEmail {
   SOMEONES_PLAN = "info@someonesplan.com",
   SOMEONES_TICKET = "info@someonesticket.com",
@@ -43,31 +81,37 @@ export enum CompanyEmail {
   SOMEONES_ENTERTAINMENT_GROUP = "info@someones.ae",
 }
 
-export type SomeonesCompany = {
-  id: number;
-  name: CompanyName;
-  slug: CompanySlug;
-  description: string;
-  email: CompanyEmail;
-  phone: string | null;
-  address: string | null;
-  website: CompanyWebsite;
-  logo: string | null;
-  is_active: boolean;
-  created_by: number;
-  created_at: string;
-  updated_at: string;
-  creator: {
-    id: number;
-    name: string;
-    email: string;
-    email_verified_at: string | null;
-    role: string;
-    is_active: boolean;
-    created_at: string;
-    updated_at: string;
-  };
-};
+// Creator schema
+const CreatorSchema = z.object({
+  id: z.number(),
+  name: z.string(),
+  email: z.string(),
+  email_verified_at: z.string().nullable(),
+  role: z.string(),
+  is_active: z.boolean(),
+  created_at: z.string(),
+  updated_at: z.string(),
+});
+
+// Company schema
+export const SomeonesCompanySchema = z.object({
+  id: z.number(),
+  name: CompanyNameSchema,
+  slug: CompanySlugSchema,
+  description: z.string(),
+  email: CompanyEmailSchema,
+  phone: z.string().nullable(),
+  address: z.string().nullable(),
+  website: CompanyWebsiteSchema,
+  logo: z.string().nullable(),
+  is_active: z.boolean(),
+  created_by: z.number(),
+  created_at: z.string(),
+  updated_at: z.string(),
+  creator: CreatorSchema,
+});
+
+export type SomeonesCompany = z.infer<typeof SomeonesCompanySchema>;
 
 // Complete Company Data
 export const SomeonesCompaniesData: Record<CompanySlug, SomeonesCompany> = {

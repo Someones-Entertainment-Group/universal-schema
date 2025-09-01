@@ -1,111 +1,216 @@
 # @someones/schema
 
-Common TypeScript types and schemas for Someones projects.
+Common types and Zod schemas for Someones projects with comprehensive validation utilities.
 
-## Overview
+## 🚀 Features
 
-This package contains shared type definitions used across multiple Someones projects including:
-- Frontend (Next.js)
-- Mobile App (React Native)
-- Admin Panel
-- Backend API integrations
+- **Type-safe**: Full TypeScript support with inferred types from Zod schemas
+- **Runtime validation**: Comprehensive data validation using Zod
+- **Validation utilities**: Built-in utilities for parsing, validation, and error handling
+- **Forward compatibility**: Easy migration from TypeScript types to Zod schemas
+- **Comprehensive schemas**: All entity types converted to Zod schemas
 
-## Installation
+## 📦 Installation
 
 ```bash
 npm install @someones/schema
-# or
-yarn add @someones/schema
 ```
 
-## Usage
+## 🏗️ Architecture
+
+This package provides:
+
+1. **Zod Schemas**: Runtime-validated schemas for all entities
+2. **TypeScript Types**: Inferred types from Zod schemas
+3. **Validation Utilities**: Helper functions for data validation
+4. **Error Handling**: Comprehensive error reporting and handling
+
+## 📚 Usage
+
+### Basic Import
 
 ```typescript
-import { User, Event, Bid, UserRoles } from '@someones/schema'
+import { 
+  // Schemas
+  MediaSchema,
+  SomeonesPlanUserSchema,
+  SomeonesPlanEventSchema,
+  
+  // Types (inferred from schemas)
+  Media,
+  SomeonesPlanUser,
+  SomeonesPlanEvent,
+  
+  // Validation utilities
+  ValidationUtil,
+  createValidator
+} from '@someones/schema';
+```
 
-// Use the types in your components
-const user: User = {
-  id: 1,
-  firstname: 'John',
-  lastname: 'Doe',
-  // ... other properties
+### 1. Basic Validation
+
+```typescript
+import { ValidationUtil, MediaSchema, type Media } from '@someones/schema';
+
+// Parse and validate data (throws on error)
+function validateMedia(data: unknown): Media {
+  return ValidationUtil.parse(MediaSchema, data);
 }
 
-const eventStatus: EventStatus = EventStatus.Active
+// Safe validation (returns result object)
+function safeValidateMedia(data: unknown) {
+  const result = ValidationUtil.safeParse(MediaSchema, data);
+  
+  if (result.success) {
+    console.log('Valid media:', result.data);
+    return result.data;
+  } else {
+    console.error('Validation failed:', result.error.getFormattedMessage());
+    return null;
+  }
+}
 ```
 
-## Available Types
+### 2. Using Validation Utilities
 
-### User Types
-- `User` - Main user interface
-- `UserRoles` - Enum for user roles
-- `UserReview` - User review structure
-- `UserReviewSummary` - Review summary statistics
+```typescript
+import { createValidator, SomeonesPlanUserSchema } from '@someones/schema';
 
-### Event Types
-- `Event` - Main event interface
-- `EventStatus` - Enum for event statuses
-- `EventType` - Enum for event types
-- `BiddingStatus` - Enum for bidding statuses
-- `Ticket` - Event ticket structure
-- `EventRegistrationSubType` - Event registration sub-types
+// Create a validator for a specific schema
+const userValidator = createValidator(SomeonesPlanUserSchema);
 
-### Bid Types
-- `Bid` - Main bid interface
+// Check if data is valid
+if (userValidator.isValid(userData)) {
+  const user = userValidator.parse(userData);
+  console.log('Valid user:', user);
+}
 
-### Cart Types
-- `CartItems` - Cart item structure
-- `CartState` - Cart state interface
-- `BiddingUser` - User bidding information
-- `AddToCartPayload` - Add to cart request
-- `RemoveCartItemPayload` - Remove from cart request
-
-### Media Types
-- `Media` - Media file structure
-- `FileManageItem` - File management structure
-
-### Utility Types
-- `ISelectMenuList` - Select menu options
-- `ISortingType` - Sorting direction
-- `DeviceTypeUtils` - Device type utilities
-- `IAxisType` - 3D axis coordinates
-- `Location` - Geographic location
-
-## Development
-
-```bash
-# Build the package
-npm run build
-
-# Watch mode for development
-npm run dev
-
-# Clean build artifacts
-npm run clean
+// Get validation errors
+const errors = userValidator.getErrors(userData);
+if (errors) {
+  console.error('Validation errors:', errors);
+}
 ```
 
-## Structure
+### 3. API Response Validation
 
+```typescript
+import { ApiResponseSchema, SomeonesPlanUserSchema } from '@someones/schema';
+
+// Create schema for API response containing user data
+const userApiResponseSchema = ApiResponseSchema(SomeonesPlanUserSchema);
+
+// Validate API response
+function validateUserApiResponse(response: unknown) {
+  return ValidationUtil.parse(userApiResponseSchema, response);
+}
 ```
-src/
-├── index.ts          # Main export file
-├── user.ts           # User-related types
-├── event.ts          # Event-related types
-├── bid.ts            # Bid-related types
-├── cart.ts           # Cart-related types
-├── media.ts          # Media-related types
-├── file-manager.ts   # File management types
-└── utils.ts          # Utility types
+
+## 📋 Available Schemas
+
+### Core Entities
+
+- `MediaSchema` - Media files and assets
+- `FileManageItemSchema` - File management items
+
+### User Schemas
+
+- `SomeonesPlanUserSchema` - Base user schema
+- `SomeonesPlanUserReviewSchema` - User reviews
+- `SomeonesPlanPerformerExtraSchema` - Performer-specific data
+- `SomeonesPlanVenderExtraSchema` - Vendor-specific data
+- `SomeonesPlanInfluencerExtraSchema` - Influencer-specific data
+- `SomeonesPlanVenueProviderExtraSchema` - Venue provider data
+- `SomeonesPlanPlannerProExtraSchema` - Planner pro data
+- `SomeonesPlanPartySeekerExtraSchema` - Party seeker data
+
+### Event Schemas
+
+- `SomeonesPlanEventSchema` - Event data
+- `SomeonesPlanTicketSchema` - Event tickets
+- `SomeonesPlanEventRegistrationSubTypeSchema` - Event registration subtypes
+
+### Business Schemas
+
+- `SomeonesPlanBidSchema` - Bidding data
+- `SomeonesPlanCartItemsSchema` - Shopping cart items
+- `SomeonesCompanySchema` - Company information
+
+### Utility Schemas
+
+- `ApiResponseSchema<T>` - Generic API response wrapper
+- `PaginatedDataSchema<T>` - Generic pagination wrapper
+- `LocationSchema` - Geographic location data
+- `ISelectMenuListSchema` - Select menu options
+
+## 🛠️ Validation Utilities
+
+### ValidationUtil Class
+
+Static methods for validation:
+
+- `parse<T>(schema, data)` - Parse and validate (throws on error)
+- `safeParse<T>(schema, data)` - Safe parse (returns result object)
+- `isValid<T>(schema, data)` - Check if data is valid
+- `getErrors<T>(schema, data)` - Get validation errors
+- `validatePartial<T>(schema, data)` - Validate partial data
+
+### createValidator Function
+
+Creates a validator instance for a specific schema:
+
+```typescript
+const validator = createValidator(SomeonesPlanUserSchema);
+
+validator.parse(data);        // Parse data
+validator.safeParse(data);    // Safe parse
+validator.isValid(data);      // Check validity
+validator.getErrors(data);    // Get errors
+validator.schema;             // Access underlying schema
 ```
 
-## Contributing
+## 🎯 Best Practices
 
-1. Add new types to the appropriate files in `src/`
-2. Export them from `src/index.ts`
-3. Update this README with the new types
-4. Build and test the changes
-5. Update version in `package.json`
+1. **Use Safe Parsing**: Prefer `safeParse` over `parse` for user input validation
+2. **Handle Partial Data**: Use `validatePartial` for form validation
+3. **Create Validators**: Use `createValidator` for frequently used schemas
+4. **Error Display**: Use `getErrorsByField()` for user-friendly error messages
+5. **Type Safety**: Always use the inferred types from schemas
 
-## License
+## 🔄 Migration from TypeScript Types
+
+The package maintains backward compatibility by exporting both Zod schemas and TypeScript types:
+
+```typescript
+// Old way (still works)
+import { SomeonesPlanUser } from '@someones/schema';
+
+// New way (with validation)
+import { SomeonesPlanUserSchema, type SomeonesPlanUser } from '@someones/schema';
+
+// Validate runtime data
+const user: SomeonesPlanUser = ValidationUtil.parse(SomeonesPlanUserSchema, userData);
+```
+
+## 📝 Examples
+
+See `src/examples.ts` for comprehensive usage examples including:
+
+- Basic validation
+- API response validation
+- Form validation
+- Bulk validation
+- Error handling patterns
+
+## 🤝 Contributing
+
+When adding new schemas:
+
+1. Create the Zod schema first
+2. Export both the schema and inferred type
+3. Add validation examples
+4. Update this README
+
+## 📄 License
 
 MIT

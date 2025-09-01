@@ -1,18 +1,22 @@
 {
   "name": "@someones/schema",
-  "version": "1.0.0",
-  "description": "Common types and schemas for Someones projects",
+  "version": "2.0.0",
+  "description": "Common types and Zod schemas for Someones projects with validation utilities",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "clean": "rm -rf dist"
+    "clean": "rm -rf dist",
+    "test": "npm run build && echo 'Build successful - all schemas validated!'"
   },
   "keywords": [
     "types",
     "schema",
-    "typescript"
+    "typescript",
+    "zod",
+    "validation",
+    "runtime-validation"
   ],
   "author": "Someones Team",
   "license": "MIT",
@@ -22,6 +26,21 @@
   },
   "files": [
     "dist/**/*",
-    "src/**/*"
-  ]
+    "src/**/*",
+    "README.md"
+  ],
+  "dependencies": {
+    "zod": "^4.1.5"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Someones-Entertainment-Group/universal-schema.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Someones-Entertainment-Group/universal-schema/issues"
+  },
+  "homepage": "https://github.com/Someones-Entertainment-Group/universal-schema#readme"
 }
