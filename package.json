@@ -1,0 +1,22 @@
+{
+  "name": "@someones/schema",
+  "version": "1.0.0",
+  "description": "Common types and schemas for Someones projects",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["types", "schema", "typescript"],
+  "author": "Someones Team",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  },
+  "files": [
+    "dist/**/*",
+    "src/**/*"
+  ]
+}
