@@ -1,20 +1,23 @@
 // User types
-export * from './plan/user'
+export * from "./plan/user";
 
 // Event types
-export * from './plan/event'
+export * from "./plan/event";
 
-// Bid types  
-export * from './plan/bid'
+// Bid types
+export * from "./plan/bid";
 
 // Cart types
-export * from './plan/cart'
+export * from "./plan/cart";
 
 // Media types
-export * from './media'
+export * from "./media";
 
 // File manager types
-export * from './file-manager'
+export * from "./file-manager";
 
 // Utility types
-export * from './utils'
+export * from "./utils";
+
+// Company types
+export * from "./companies";

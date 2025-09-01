@@ -1,26 +1,32 @@
 // Field and form-related types
 export interface ISelectMenuList {
-  value: string
-  label: string
-  isGroup?: boolean
+  value: string;
+  label: string;
+  isGroup?: boolean;
 }
 
-export type ISortingType = 'ascending' | 'descending' | ''
+export type ISortingType = "ascending" | "descending" | "";
 
 export interface DeviceTypeUtils {
-  web: boolean
-  mobile: boolean
-  email: boolean
+  web: boolean;
+  mobile: boolean;
+  email: boolean;
 }
 
 export interface IAxisType {
-  x: number
-  y: number
-  z: number
+  x: number;
+  y: number;
+  z: number;
 }
 
 export interface Location {
-  longitude: string
-  latitude: string
-  name: string
+  longitude: string;
+  latitude: string;
+  name: string;
+}
+
+export interface ApiResponse<T = any> {
+  success: boolean;
+  message: string;
+  data: T;
 }
