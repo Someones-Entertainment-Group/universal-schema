@@ -1,5 +1,5 @@
-import { z } from 'zod';
-import { MediaSchema } from './media';
+import { z } from "zod";
+import { MediaSchema } from "./media";
 
 // File management Zod schemas
 export const FileManageItemSchema = z.object({
