@@ -30,3 +30,15 @@ export interface ApiResponse<T = any> {
   message: string;
   data: T;
 }
+
+export type PaginationMetaData = {
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  totalItems: number;
+};
+
+export type PaginatedData<T> = {
+  items: T[];
+  meta: PaginationMetaData;
+};
