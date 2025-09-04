@@ -1,6 +1,7 @@
-import { z } from 'zod';
+import { z } from "zod";
 
-import { MediaSchema } from '../media';
+import { MediaSchema } from "../media";
+import { SomeonesPlanUserReviewBaseSchema } from "./review";
 
 // User roles enum and schema
 export const UserRolesSchema = z.enum([
@@ -33,19 +34,6 @@ export const SomeonesPlanUserReviewSummarySchema = z.object({
   rating_counts: z.record(z.number(), z.number()),
 });
 
-// Base user review schema without circular references
-export const SomeonesPlanUserReviewBaseSchema = z.object({
-  id: z.number(),
-  reviewer_id: z.number(),
-  bidder_id: z.number(),
-  event_id: z.number(),
-  rating: z.number(),
-  review: z.string(),
-  status: z.string(),
-  created_at: z.string(),
-  updated_at: z.string(),
-});
-
 // Base user schema
 export const SomeonesPlanUserSchema = z.object({
   id: z.number(),
@@ -75,11 +63,12 @@ export const SomeonesPlanUserSchema = z.object({
 });
 
 // Full user review schema with lazy references
-export const SomeonesPlanUserReviewSchema = SomeonesPlanUserReviewBaseSchema.extend({
-  event: z.any().optional(), // Will be SomeonesPlanEventSchema
-  bidder: z.lazy(() => SomeonesPlanUserSchema).optional(),
-  reviewer: z.lazy(() => SomeonesPlanUserSchema).optional(),
-});
+export const SomeonesPlanUserReviewSchema =
+  SomeonesPlanUserReviewBaseSchema.extend({
+    event: z.any().optional(), // Will be SomeonesPlanEventSchema
+    bidder: z.lazy(() => SomeonesPlanUserSchema).optional(),
+    reviewer: z.lazy(() => SomeonesPlanUserSchema).optional(),
+  });
 
 // Extra schemas for different user types
 export const SomeonesPlanPerformerExtraSchema = z.object({
@@ -187,9 +176,10 @@ export const SomeonesPlanInfluencerUserSchema = SomeonesPlanUserSchema.extend({
   influencer_extra: SomeonesPlanInfluencerExtraSchema,
 });
 
-export const SomeonesPlanVenueProviderUserSchema = SomeonesPlanUserSchema.extend({
-  venue_provider_extra: SomeonesPlanVenueProviderExtraSchema,
-});
+export const SomeonesPlanVenueProviderUserSchema =
+  SomeonesPlanUserSchema.extend({
+    venue_provider_extra: SomeonesPlanVenueProviderExtraSchema,
+  });
 
 export const SomeonesPlanPlannerProUserSchema = SomeonesPlanUserSchema.extend({
   planner_pro_extra: SomeonesPlanPlannerProExtraSchema,
@@ -200,7 +190,15 @@ export const SomeonesPlanPartySeekerUserSchema = SomeonesPlanUserSchema.extend({
 });
 
 // Union schema for user with role
-export const SomeonesPlanUserWithRoleSchema = z.union([
+export const SomeonesPlanUserWithRoleSchema: z.ZodType<
+  | z.infer<typeof SomeonesPlanEventOwnerUserSchema>
+  | z.infer<typeof SomeonesPlanPerformerUserSchema>
+  | z.infer<typeof SomeonesPlanVenderUserSchema>
+  | z.infer<typeof SomeonesPlanInfluencerUserSchema>
+  | z.infer<typeof SomeonesPlanVenueProviderUserSchema>
+  | z.infer<typeof SomeonesPlanPlannerProUserSchema>
+  | z.infer<typeof SomeonesPlanPartySeekerUserSchema>
+> = z.union([
   SomeonesPlanEventOwnerUserSchema,
   SomeonesPlanPerformerUserSchema,
   SomeonesPlanVenderUserSchema,
@@ -236,22 +234,60 @@ export const SomeonesPlanBankAccountSchema = z.object({
 
 // Infer types from schemas
 export type SomeonesPlanUser = z.infer<typeof SomeonesPlanUserSchema>;
-export type SomeonesPlanUserReview = z.infer<typeof SomeonesPlanUserReviewSchema>;
-export type SomeonesPlanUserReviewSummary = z.infer<typeof SomeonesPlanUserReviewSummarySchema>;
-export type SomeonesPlanPerformerExtra = z.infer<typeof SomeonesPlanPerformerExtraSchema>;
-export type SomeonesPlanVenderExtra = z.infer<typeof SomeonesPlanVenderExtraSchema>;
-export type SomeonesPlanInfluencerExtra = z.infer<typeof SomeonesPlanInfluencerExtraSchema>;
-export type SomeonesPlanVenueProviderExtra = z.infer<typeof SomeonesPlanVenueProviderExtraSchema>;
-export type SomeonesPlanPlannerProExtra = z.infer<typeof SomeonesPlanPlannerProExtraSchema>;
-export type SomeonesPlanPartySeekerExtra = z.infer<typeof SomeonesPlanPartySeekerExtraSchema>;
-export type SomeonesPlanEventOwnerUser = z.infer<typeof SomeonesPlanEventOwnerUserSchema>;
-export type SomeonesPlanPerformerUser = z.infer<typeof SomeonesPlanPerformerUserSchema>;
-export type SomeonesPlanVenderUser = z.infer<typeof SomeonesPlanVenderUserSchema>;
-export type SomeonesPlanInfluencerUser = z.infer<typeof SomeonesPlanInfluencerUserSchema>;
-export type SomeonesPlanVenueProviderUser = z.infer<typeof SomeonesPlanVenueProviderUserSchema>;
-export type SomeonesPlanPlannerProUser = z.infer<typeof SomeonesPlanPlannerProUserSchema>;
-export type SomeonesPlanPartySeekerUser = z.infer<typeof SomeonesPlanPartySeekerUserSchema>;
-export type SomeonesPlanUserWithRole = z.infer<typeof SomeonesPlanUserWithRoleSchema>;
-export type SomeonesPlanUserWithToken = z.infer<typeof SomeonesPlanUserWithTokenSchema>;
-export type SomeonesPlanGalleryItem = z.infer<typeof SomeonesPlanGalleryItemSchema>;
-export type SomeonesPlanBankAccount = z.infer<typeof SomeonesPlanBankAccountSchema>;
+export type SomeonesPlanUserReview = z.infer<
+  typeof SomeonesPlanUserReviewSchema
+>;
+export type SomeonesPlanUserReviewSummary = z.infer<
+  typeof SomeonesPlanUserReviewSummarySchema
+>;
+export type SomeonesPlanPerformerExtra = z.infer<
+  typeof SomeonesPlanPerformerExtraSchema
+>;
+export type SomeonesPlanVenderExtra = z.infer<
+  typeof SomeonesPlanVenderExtraSchema
+>;
+export type SomeonesPlanInfluencerExtra = z.infer<
+  typeof SomeonesPlanInfluencerExtraSchema
+>;
+export type SomeonesPlanVenueProviderExtra = z.infer<
+  typeof SomeonesPlanVenueProviderExtraSchema
+>;
+export type SomeonesPlanPlannerProExtra = z.infer<
+  typeof SomeonesPlanPlannerProExtraSchema
+>;
+export type SomeonesPlanPartySeekerExtra = z.infer<
+  typeof SomeonesPlanPartySeekerExtraSchema
+>;
+export type SomeonesPlanEventOwnerUser = z.infer<
+  typeof SomeonesPlanEventOwnerUserSchema
+>;
+export type SomeonesPlanPerformerUser = z.infer<
+  typeof SomeonesPlanPerformerUserSchema
+>;
+export type SomeonesPlanVenderUser = z.infer<
+  typeof SomeonesPlanVenderUserSchema
+>;
+export type SomeonesPlanInfluencerUser = z.infer<
+  typeof SomeonesPlanInfluencerUserSchema
+>;
+export type SomeonesPlanVenueProviderUser = z.infer<
+  typeof SomeonesPlanVenueProviderUserSchema
+>;
+export type SomeonesPlanPlannerProUser = z.infer<
+  typeof SomeonesPlanPlannerProUserSchema
+>;
+export type SomeonesPlanPartySeekerUser = z.infer<
+  typeof SomeonesPlanPartySeekerUserSchema
+>;
+export type SomeonesPlanUserWithRole = z.infer<
+  typeof SomeonesPlanUserWithRoleSchema
+>;
+export type SomeonesPlanUserWithToken = z.infer<
+  typeof SomeonesPlanUserWithTokenSchema
+>;
+export type SomeonesPlanGalleryItem = z.infer<
+  typeof SomeonesPlanGalleryItemSchema
+>;
+export type SomeonesPlanBankAccount = z.infer<
+  typeof SomeonesPlanBankAccountSchema
+>;
