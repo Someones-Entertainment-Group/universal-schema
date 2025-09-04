@@ -25,5 +25,5 @@ export const SomeonesPlanUserReviewBaseSchema = z.object({
   updated_at: z.string(),
   reviewer: SomeonesPlanUserShortSchema,
   bidder: SomeonesPlanUserShortSchema,
-  event: z.object(SomeonesPlanEventSchema),
+  event: SomeonesPlanEventSchema,
 });
