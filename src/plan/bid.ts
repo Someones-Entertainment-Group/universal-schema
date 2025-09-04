@@ -1,5 +1,8 @@
 import { z } from 'zod';
 
+import { SomeonesPlanEventSchema } from './event';
+import { SomeonesPlanUserSchema } from './user';
+
 // Bid statuses enum and schema
 export const BidStatusesSchema = z.enum([
   "pending",
@@ -32,8 +35,8 @@ export const SomeonesPlanBidSchema = z.object({
   updated_at: z.string(),
 }).extend({
   // These will be properly typed when the related schemas are available
-  bidder: z.any(), // SomeonesPlanUserSchema
-  event: z.any(),  // SomeonesPlanEventSchema
+  bidder: SomeonesPlanUserSchema,
+  event: SomeonesPlanEventSchema,
 });
 
 // Infer types
