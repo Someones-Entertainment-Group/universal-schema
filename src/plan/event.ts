@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { BidStatusesSchema } from "./bid";
 
 // Event-related enums and schemas
@@ -43,7 +44,7 @@ enum EventStatus {
   Pending = "pending",
 }
 
-enum EventType {
+export enum EventType {
   Wedding = "wedding",
   Birthday = "birthday",
   Corporate = "corporate",
@@ -56,7 +57,7 @@ enum EventType {
   Other = "other",
 }
 
-enum BiddingStatus {
+export enum BiddingStatus {
   Open = "open",
   Closed = "closed",
 }

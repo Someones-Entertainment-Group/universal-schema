@@ -1,4 +1,5 @@
 import { z } from 'zod';
+
 import { MediaSchema } from '../media';
 
 // User roles enum and schema
@@ -12,7 +13,7 @@ export const UserRolesSchema = z.enum([
   "party_seeker",
 ]);
 
-enum UserRoles {
+export enum UserRoles {
   // Admin Users
   EventOwner = "event_owner",
   PlannerPro = "planner_pro",
