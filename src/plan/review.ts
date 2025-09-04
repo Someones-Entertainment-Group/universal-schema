@@ -1,8 +1,10 @@
 import { z } from "zod";
 
+import { MediaSchema } from "../media";
 import { SomeonesPlanEventSchema } from "./event";
 
 export const SomeonesPlanUserShortSchema = z.object({
+  profile_image: MediaSchema.nullable(),
   id: z.number(),
   firstname: z.string(),
   lastname: z.string(),
@@ -21,7 +23,7 @@ export const SomeonesPlanUserReviewBaseSchema = z.object({
   status: z.string(),
   created_at: z.string(),
   updated_at: z.string(),
-  reviewer: z.array(SomeonesPlanUserShortSchema),
-  bidder: z.array(SomeonesPlanUserShortSchema),
+  reviewer: SomeonesPlanUserShortSchema,
+  bidder: SomeonesPlanUserShortSchema,
   event: z.object(SomeonesPlanEventSchema),
 });
