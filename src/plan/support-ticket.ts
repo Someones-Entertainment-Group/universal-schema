@@ -1,3 +1,5 @@
+import { PaginatedData } from "../utils";
+
 // Support ticket status enum
 export enum SupportTicketStatus {
   Open = "open",
@@ -65,12 +67,4 @@ export interface SomeonesPlanSupportUpdateStatusRequest {
 }
 
 // Support tickets response type
-export interface SomeonesPlanSupportTicketsResponse {
-  data: SomeonesPlanSupportTicket[];
-  current_page: number;
-  last_page: number;
-  per_page: number;
-  total: number;
-  from: number;
-  to: number;
-}
+export type SomeonesPlanSupportTicketsResponse = PaginatedData<SomeonesPlanSupportTicket>;

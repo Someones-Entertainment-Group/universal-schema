@@ -1,4 +1,5 @@
 import { SomeonesPlanUser } from "./user";
+import { PaginatedData } from "../utils";
 
 // Payout status enum
 export enum PayoutStatus {
@@ -81,12 +82,4 @@ export interface SomeonesPlanPayoutUpdateStatusRequest {
 }
 
 // Payout requests response type
-export interface SomeonesPlanPayoutRequestsResponse {
-  data: SomeonesPlanPayoutRequest[];
-  current_page: number;
-  last_page: number;
-  per_page: number;
-  total: number;
-  from: number;
-  to: number;
-}
+export type SomeonesPlanPayoutRequestsResponse = PaginatedData<SomeonesPlanPayoutRequest>;
