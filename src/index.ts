@@ -10,6 +10,12 @@ export * from "./plan/bid";
 // Cart types and schemas
 export * from "./plan/cart";
 
+// Payout types and schemas
+export * from "./plan/payout";
+
+// Support ticket types and schemas
+export * from "./plan/support-ticket";
+
 // Media types and schemas
 export * from "./media";
 
