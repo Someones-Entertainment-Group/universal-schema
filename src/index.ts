@@ -21,6 +21,3 @@ export * from "./utils";
 
 // Company types and schemas
 export * from "./companies";
-
-// Validation utilities
-export * from "./validation";

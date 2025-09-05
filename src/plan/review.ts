@@ -1,29 +1,18 @@
-import { z } from "zod";
+import { SomeonesPlanEvent } from "./event";
+import { SomeonesPlanUser } from "./user";
 
-import { MediaSchema } from "../media";
-import { SomeonesPlanEventSchema } from "./event";
-
-export const SomeonesPlanUserShortSchema = z.object({
-  profile_image: MediaSchema.nullable(),
-  id: z.number(),
-  firstname: z.string(),
-  lastname: z.string(),
-  business_name: z.string().nullable(),
-  username: z.string(),
-});
-
-// Base user review schema without circular references
-export const SomeonesPlanUserReviewBaseSchema = z.object({
-  id: z.number(),
-  reviewer_id: z.number(),
-  bidder_id: z.number(),
-  event_id: z.number(),
-  rating: z.number(),
-  review: z.string(),
-  status: z.string(),
-  created_at: z.string(),
-  updated_at: z.string(),
-  reviewer: SomeonesPlanUserShortSchema,
-  bidder: SomeonesPlanUserShortSchema,
-  event: SomeonesPlanEventSchema,
-});
+// Base user review type without circular references
+export interface SomeonesPlanUserReviewBase {
+  id: number;
+  reviewer_id: number;
+  bidder_id: number;
+  event_id: number;
+  rating: number;
+  review: string;
+  status: string;
+  created_at: string;
+  updated_at: string;
+  reviewer: SomeonesPlanUser;
+  bidder: SomeonesPlanUser;
+  event: SomeonesPlanEvent;
+}

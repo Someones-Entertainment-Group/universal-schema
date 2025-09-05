@@ -1,16 +1,7 @@
-import { z } from 'zod';
+import { SomeonesPlanUser } from "./user";
+import { SomeonesPlanEvent } from "./event";
 
-import { SomeonesPlanEventSchema } from './event';
-import { SomeonesPlanUserSchema } from './user';
-
-// Bid statuses enum and schema
-export const BidStatusesSchema = z.enum([
-  "pending",
-  "dismissed",
-  "accepted",
-  "canceled",
-]);
-
+// Bid statuses enum
 export enum BidStatuses {
   Pending = "pending",
   Dismissed = "dismissed",
@@ -18,27 +9,25 @@ export enum BidStatuses {
   Canceled = "canceled",
 }
 
-// Bid schema with forward references
-export const SomeonesPlanBidSchema = z.object({
-  id: z.number(),
-  bidder_id: z.number(),
-  bidder_name: z.string(),
-  bidder_role: z.string(),
-  event_name: z.string(),
-  event_id: z.number(),
-  user_id: z.number(),
-  bid_amount: z.number(),
-  note: z.string(),
-  owner_note: z.string(),
-  status: BidStatusesSchema,
-  created_at: z.string(),
-  updated_at: z.string(),
-}).extend({
-  // These will be properly typed when the related schemas are available
-  bidder: SomeonesPlanUserSchema,
-  event: SomeonesPlanEventSchema,
-});
+// Base bid type without circular references
+export interface SomeonesPlanBidBase {
+  id: number;
+  bidder_id: number;
+  bidder_name: string;
+  bidder_role: string;
+  event_name: string;
+  event_id: number;
+  user_id: number;
+  bid_amount: number;
+  note: string;
+  owner_note: string;
+  status: BidStatuses;
+  created_at: string;
+  updated_at: string;
+}
 
-// Infer types
-export type SomeonesPlanBid = z.infer<typeof SomeonesPlanBidSchema>;
-export type SomeonesPlanBidStatuses = z.infer<typeof BidStatusesSchema>;
+// Full bid type with circular references
+export interface SomeonesPlanBid extends SomeonesPlanBidBase {
+  bidder: SomeonesPlanUser;
+  event: SomeonesPlanEvent;
+}

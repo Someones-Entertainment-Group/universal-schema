@@ -1,16 +1,11 @@
-import { z } from 'zod';
-
-// Media-related Zod schemas
-export const MediaSchema = z.object({
-  id: z.string(),
-  bucket: z.string(),
-  file_name: z.string(),
-  file_type: z.string(),
-  file_size: z.string(),
-  c_img: z.string(),
-  created_at: z.string(),
-  updated_at: z.string(),
-});
-
-// Infer types from schemas
-export type Media = z.infer<typeof MediaSchema>;
+// Media-related types
+export interface Media {
+  id: string;
+  bucket: string;
+  file_name: string;
+  file_type: string;
+  file_size: string;
+  c_img: string;
+  created_at: string;
+  updated_at: string;
+}

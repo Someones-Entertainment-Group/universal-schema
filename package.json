@@ -1,7 +1,7 @@
 {
   "name": "@someones/schema",
   "version": "2.0.0",
-  "description": "Common types and Zod schemas for Someones projects with validation utilities",
+  "description": "Common types and interfaces for Someones projects",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -12,11 +12,8 @@
   },
   "keywords": [
     "types",
-    "schema",
-    "typescript",
-    "zod",
-    "validation",
-    "runtime-validation"
+    "interfaces",
+    "typescript"
   ],
   "author": "Someones Team",
   "license": "MIT",
@@ -29,9 +26,7 @@
     "src/**/*",
     "README.md"
   ],
-  "dependencies": {
-    "zod": "^4.1.5"
-  },
+  "dependencies": {},
   "engines": {
     "node": ">=16.0.0"
   },
