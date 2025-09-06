@@ -44,6 +44,7 @@ export interface SomeonesPlanPayoutRequest {
   updated_at: string;
   user: SomeonesPlanUser;
   bid: SomeonesPlanPayoutBid;
+  bidding?: SomeonesPlanPayoutBid; // Optional bidding property for backward compatibility
   invoice_url?: string;
 }
 
