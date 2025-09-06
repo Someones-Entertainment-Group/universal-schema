@@ -1,5 +1,6 @@
 import { SomeonesPlanUser } from "./user";
 import { PaginatedData } from "../utils";
+import { SomeonesPlanEvent } from "./event";
 
 // Payout status enum
 export enum PayoutStatus {
@@ -20,12 +21,10 @@ export interface SomeonesPlanPayoutBid {
   bidder_type: string;
   created_at: string;
   updated_at: string;
-  event: {
-    id: number;
-    event_name: string;
-  };
+  event: SomeonesPlanEvent;
   user: SomeonesPlanUser;
 }
+
 
 // Payout request type
 export interface SomeonesPlanPayoutRequest {
