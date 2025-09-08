@@ -1,7 +1,7 @@
 import { SomeonesPlanUser } from "./user";
 
 // Event-related enums
-export enum EventStatus {
+export enum SomeonesPlanEventStatus {
   Draft = "draft",
   Published = "published",
   Active = "active",
@@ -12,7 +12,7 @@ export enum EventStatus {
   Pending = "pending",
 }
 
-export enum EventType {
+export enum SomeonesPlanEventType {
   Wedding = "wedding",
   Birthday = "birthday",
   Corporate = "corporate",
@@ -25,7 +25,7 @@ export enum EventType {
   Other = "other",
 }
 
-export enum BiddingStatus {
+export enum SomeonesPlanBiddingStatus {
   Open = "open",
   Closed = "closed",
 }
@@ -86,8 +86,8 @@ export interface SomeonesPlanEvent {
   dress_code_description: string;
   updated_at: string;
   created_at: string;
-  status: EventStatus;
-  bidding_status: BiddingStatus;
+  status: SomeonesPlanEventStatus;
+  bidding_status: SomeonesPlanBiddingStatus;
   event_profile: string;
   total_bidders: number;
   event_time_left: string;
