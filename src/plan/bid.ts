@@ -2,7 +2,7 @@ import { SomeonesPlanUser } from "./user";
 import { SomeonesPlanEvent } from "./event";
 
 // Bid statuses enum
-export enum BidStatuses {
+export enum SomeonesPlanBidStatus {
   Pending = "pending",
   Dismissed = "dismissed",
   Accepted = "accepted",
@@ -21,7 +21,7 @@ export interface SomeonesPlanBidBase {
   bid_amount: number;
   note: string;
   owner_note: string;
-  status: BidStatuses;
+  status: SomeonesPlanBidStatus;
   created_at: string;
   updated_at: string;
 }
