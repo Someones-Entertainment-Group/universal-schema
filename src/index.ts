@@ -27,3 +27,9 @@ export * from "./utils";
 
 // Company types and schemas
 export * from "./companies";
+
+// Permission types and schemas
+export * from "./permissions";
+
+// Permission category types and schemas
+export * from "./permission-categories";
