@@ -80,6 +80,7 @@ export interface SomeonesPlanPerformerExtra {
   musician_type_options: string[];
   dancer_type_options: string[];
   dj_type_options: string[];
+  special_acts_type_options: string[];
   availability_in_kids_party: string;
   bio: string;
   languages: string[];
