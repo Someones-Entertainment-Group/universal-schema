@@ -92,6 +92,7 @@ export interface SomeonesPlanVenderExtra {
   vender_type: string[];
   catering_category: string[];
   service_provided: string;
+  event_vendors_options: string[];
   availability_in_kids_party: string;
   bio: string;
   languages: string[];
