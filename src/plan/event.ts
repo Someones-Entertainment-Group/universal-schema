@@ -96,4 +96,11 @@ export interface SomeonesPlanEvent {
   event_registration_sub_types: SomeonesPlanEventRegistrationSubType[];
   owner: SomeonesPlanUser;
   bidders?: SomeonesPlanBidReference[];
+  event_registration_types:{
+    id: number;
+    event_id: number;
+    event_types: string;
+    created_at: string;
+    updated_at: string;
+  }[];
 }
