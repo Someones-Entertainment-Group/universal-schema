@@ -45,6 +45,7 @@ export interface SomeonesPlanUser {
   created_at: string;
   updated_at: string;
   token: string;
+  is_active:boolean;
   reviews: SomeonesPlanUserReviewBase[];
   summary?: SomeonesPlanUserReviewSummary;
   profile_image: Media | null;
