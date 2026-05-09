@@ -1,6 +1,9 @@
 // User types and schemas
 export * from "./plan/user";
 
+// Profile types and schemas (multi-profile milestone — Phase 1 / 01a)
+export * from "./plan/profile";
+
 // Event types and schemas
 export * from "./plan/event";
 
