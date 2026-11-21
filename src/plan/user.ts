@@ -56,6 +56,7 @@ export interface SomeonesPlanUser {
     company_invoice_address: string;
     company_website: string;
     have_company:boolean;
+    vat_registered?: boolean | null;
     license_number: string;
     uae_tax_registration_number: string;
     vat_number: string;
